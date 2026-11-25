@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>A Little Question for You 🐻💕</title>
+  <style>
+    :root {
+      --bg-1: #fff5f7;
+      --bg-2: #ffe8ee;
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-border: rgba(235, 118, 149, 0.25);
+      --text-main: #2d1b22;
+      --text-muted: #765863;
+      --accent: #e84c76;
+      --accent-hover: #d63864;
+      --accent-soft: rgba(232, 76, 118, 0.12);
+      --btn-secondary-bg: #f6e7ec;
+      --btn-secondary-text: #5f424c;
+      --bubble-bg: #ffffff;
+      --bubble-border: rgba(232, 76, 118, 0.22);
+      --shadow: 0 20px 50px rgba(173, 55, 88, 0.14);
+      --bear-fur: #c68b59;
+      --bear-fur-dark: #a66f42;
+      --bear-snout: #f5d9bf;
+      --bear-ear-inner: #f2a7b8;
+      --bear-blush: #ff8fa3;
+      --bear-nose: #3d241c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg-1: #161015;
+        --bg-2: #24151e;
+        --card-bg: rgba(34, 23, 30, 0.92);
+        --card-border: rgba(255, 130, 165, 0.2);
+        --text-main: #f9ecf0;
+        --text-muted: #c8aeb7;
+        --accent: #ff6b93;
+        --accent-hover: #ff85a6;
+        --accent-soft: rgba(255, 107, 147, 0.16);
+        --btn-secondary-bg: #35232d;
+        --btn-secondary-text: #e6cfd7;
+        --bubble-bg: #2c1d26;
+        --bubble-border: rgba(255, 130, 165, 0.26);
+        --shadow: 0 22px 55px rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg-1: #161015;
+      --bg-2: #24151e;
+      --card-bg: rgba(34, 23, 30, 0.92);
+      --card-border: rgba(255, 130, 165, 0.2);
+      --text-main: #f9ecf0;
+      --text-muted: #c8aeb7;
+      --accent: #ff6b93;
+      --accent-hover: #ff85a6;
+      --accent-soft: rgba(255, 107, 147, 0.16);
+      --btn-secondary-bg: #35232d;
+      --btn-secondary-text: #e6cfd7;
+      --bubble-bg: #2c1d26;
+      --bubble-border: rgba(255, 130, 165, 0.26);
+      --shadow: 0 22px 55px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100dvh;
+      font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--text-main);
+      background: radial-gradient(circle at top, var(--bg-2), var(--bg-1) 65%);
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+      position: relative;
+    }
+
+    .floating-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .bg-heart {
+      position: absolute;
+      bottom: -40px;
+      font-size: 18px;
+      opacity: 0.22;
+      animation: driftUp linear infinite;
+    }
+
+    @keyframes driftUp {
+      0% {
+        transform: translateY(0) scale(0.85) rotate(0deg);
+        opacity: 0;
+      }
+      15% { opacity: 0.25; }
+      85% { opacity: 0.2; }
+      100% {
+        transform: translateY(-110dvh) scale(1.15) rotate(20deg);
+        opacity: 0;
+      }
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: max(14px, env(safe-area-inset-top));
+      right: 14px;
+      z-index: 20;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 18px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .theme-toggle:active {
+      transform: scale(0.92);
+    }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 26px 22px 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    /* Speech Bubble */
+    .speech-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+      min-height: 48px;
+    }
+
+    .speech-bubble {
+      position: relative;
+      display: inline-block;
+      max-width: 92%;
+      background: var(--bubble-bg);
+      border: 1.5px solid var(--bubble-border);
+      color: var(--text-main);
+      padding: 10px 16px;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.35;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      animation: popIn 0.28s cubic-bezier(0.22, 1.3, 0.36, 1);
+    }
+
+    .speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 13px;
+      height: 13px;
+      background: var(--bubble-bg);
+      border-right: 1.5px solid var(--bubble-border);
+      border-bottom: 1.5px solid var(--bubble-border);
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9) translateY(4px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Animated Bear */
+    .bear-stage {
+      width: 156px;
+      height: 146px;
+      margin: 2px auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .bear-svg {
+      width: 148px;
+      height: 140px;
+      overflow: visible;
+      animation: bearFloat 3.2s ease-in-out infinite;
+    }
+
+    .bear-svg.excited {
+      animation: bearBounce 0.65s ease-in-out infinite;
+    }
+
+    .bear-svg.sad {
+      animation: bearDroop 2.6s ease-in-out infinite;
+    }
+
+    @keyframes bearFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes bearBounce {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-10px) scale(1.03); }
+    }
+
+    @keyframes bearDroop {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(3px) rotate(-1.5deg); }
+    }
+
+    .bear-ear-left {
+      transform-origin: 42px 38px;
+      animation: earWiggleL 4.5s ease-in-out infinite;
+    }
+
+    .bear-ear-right {
+      transform-origin: 118px 38px;
+      animation: earWiggleR 4.5s ease-in-out infinite;
+    }
+
+    @keyframes earWiggleL {
+      0%, 88%, 100% { transform: rotate(0deg); }
+      92% { transform: rotate(-7deg); }
+      96% { transform: rotate(3deg); }
+    }
+
+    @keyframes earWiggleR {
+      0%, 88%, 100% { transform: rotate(0deg); }
+      92% { transform: rotate(7deg); }
+      96% { transform: rotate(-3deg); }
+    }
+
+    .bear-eyes {
+      transform-origin: 80px 66px;
+      animation: blink 4.4s infinite;
+    }
+
+    @keyframes blink {
+      0%, 92%, 96%, 100% { transform: scaleY(1); }
+      94% { transform: scaleY(0.1); }
+    }
+
+    .bear-heart {
+      transform-origin: 80px 108px;
+      animation: heartPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      45% { transform: scale(1.12); }
+    }
+
+    .bear-tears { opacity: 0; transition: opacity 0.25s ease; }
+    .bear-svg.sad .bear-tears { opacity: 1; }
+    .bear-svg.sad .bear-heart { opacity: 0.45; }
+
+    .bear-happy-eyes { display: none; }
+    .bear-svg.excited .bear-happy-eyes { display: block; }
+    .bear-svg.excited .bear-eyes { display: none; }
+
+    /* Typography & Steps */
+    .step {
+      display: none;
+      animation: fadeSlide 0.35s ease;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      margin: 4px 0 8px;
+      font-size: clamp(1.42rem, 5vw, 1.75rem);
+      line-height: 1.22;
+      font-weight: 800;
+      letter-spacing: -0.015em;
+    }
+
+    .subtext {
+      margin: 0 0 20px;
+      color: var(--text-muted);
+      font-size: 0.97rem;
+      line-height: 1.45;
+    }
+
+    .no-reaction {
+      min-height: 24px;
+      margin: -6px 0 16px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* Yes / No Buttons */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 13px 24px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(232, 76, 118, 0.32);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+    }
+
+    .btn-secondary.converted {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(232, 76, 118, 0.32);
+    }
+
+    .btn.shake {
+      animation: wiggleNo 0.36s ease;
+    }
+
+    @keyframes wiggleNo {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-7px) rotate(-2deg); }
+      45% { transform: translateX(7px) rotate(2deg); }
+      70% { transform: translateX(-4px); }
+    }
+
+    /* Choice Lists */
+    .options-list {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+      margin-top: 14px;
+    }
+
+    .option-card {
+      width: 100%;
+      border: 1.5px solid var(--card-border);
+      background: var(--bubble-bg);
+      color: var(--text-main);
+      border-radius: 18px;
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      transition: border-color 0.18s ease, transform 0.18s ease, background-color 0.18s ease;
+    }
+
+    .option-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .option-card:active {
+      transform: scale(0.985);
+    }
+
+    .option-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 6px 18px rgba(232, 76, 118, 0.14);
+    }
+
+    .option-emoji {
+      font-size: 1.55rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .option-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .option-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .option-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .custom-choice {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--card-border);
+      text-align: left;
+    }
+
+    .custom-choice label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .custom-choice-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .custom-choice input {
+      min-width: 0;
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      background: var(--bubble-bg);
+      color: var(--text-main);
+      padding: 12px 13px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      outline: none;
+    }
+
+    .custom-choice input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .custom-choice .btn {
+      padding: 12px 15px;
+      border-radius: 14px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 420px) {
+      .custom-choice-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .step-actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Final Box */
+    .summary-box {
+      background: var(--accent-soft);
+      border: 1.5px dashed var(--accent);
+      border-radius: 18px;
+      padding: 15px 16px;
+      margin: 14px 0 18px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--text-main);
+    }
+
+    .copy-feedback {
+      margin-top: 10px;
+      min-height: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .confetti-piece {
+      position: fixed;
+      top: -16px;
+      z-index: 30;
+      pointer-events: none;
+      font-size: 18px;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(105dvh) rotate(320deg);
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-bg" id="floatingBg" aria-hidden="true"></div>
+
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme" title="Toggle light/dark mode">
+    🌙
+  </button>
+
+  <main class="card">
+    <div class="speech-wrap">
+      <div class="speech-bubble" id="speechBubble"></div>
+    </div>
+
+    <div class="bear-stage" aria-hidden="true">
+      <svg class="bear-svg" id="bearSvg" viewBox="0 0 160 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ears -->
+        <g class="bear-ear-left">
+          <circle cx="42" cy="36" r="18" fill="var(--bear-fur)" />
+          <circle cx="42" cy="37" r="10" fill="var(--bear-ear-inner)" />
+        </g>
+        <g class="bear-ear-right">
+          <circle cx="118" cy="36" r="18" fill="var(--bear-fur)" />
+          <circle cx="118" cy="37" r="10" fill="var(--bear-ear-inner)" />
+        </g>
+
+        <!-- Body -->
+        <ellipse cx="80" cy="116" rx="40" ry="30" fill="var(--bear-fur)" />
+        <ellipse cx="80" cy="119" rx="24" ry="18" fill="var(--bear-snout)" opacity="0.7" />
+
+        <!-- Head -->
+        <ellipse cx="80" cy="68" rx="46" ry="39" fill="var(--bear-fur)" />
+
+        <!-- Cheeks -->
+        <ellipse cx="49" cy="76" rx="8" ry="5" fill="var(--bear-blush)" opacity="0.65" />
+        <ellipse cx="111" cy="76" rx="8" ry="5" fill="var(--bear-blush)" opacity="0.65" />
+
+        <!-- Snout -->
+        <ellipse cx="80" cy="79" rx="18" ry="13" fill="var(--bear-snout)" />
+        <ellipse cx="80" cy="74" rx="6.5" ry="4.5" fill="var(--bear-nose)" />
+        <path id="bearMouth" d="M74 83 Q80 88 86 83" stroke="var(--bear-nose)" stroke-width="2.6" stroke-linecap="round" fill="none" />
+
+        <!-- Normal / Pleading Eyes -->
+        <g class="bear-eyes">
+          <circle cx="60" cy="64" r="4.8" fill="var(--bear-nose)" />
+          <circle cx="58.5" cy="62.3" r="1.6" fill="#ffffff" />
+          <circle cx="100" cy="64" r="4.8" fill="var(--bear-nose)" />
+          <circle cx="98.5" cy="62.3" r="1.6" fill="#ffffff" />
+        </g>
+
+        <!-- Happy Crescent Eyes -->
+        <g class="bear-happy-eyes">
+          <path d="M54 65 Q60 58 66 65" stroke="var(--bear-nose)" stroke-width="3" stroke-linecap="round" fill="none" />
+          <path d="M94 65 Q100 58 106 65" stroke="var(--bear-nose)" stroke-width="3" stroke-linecap="round" fill="none" />
+        </g>
+
+        <!-- Tears (when No is clicked) -->
+        <g class="bear-tears">
+          <path d="M56 71 C53 76 59 79 59 75 Z" fill="#8fd3ff" />
+          <path d="M104 71 C107 76 101 79 101 75 Z" fill="#8fd3ff" />
+        </g>
+
+        <!-- Paws -->
+        <ellipse cx="52" cy="112" rx="11" ry="9" transform="rotate(-18 52 112)" fill="var(--bear-fur-dark)" />
+        <ellipse cx="108" cy="112" rx="11" ry="9" transform="rotate(18 108 112)" fill="var(--bear-fur-dark)" />
+
+        <!-- Heart -->
+        <g class="bear-heart">
+          <path d="M80 121 C80 121 63 110 63 99 C63 93 68 89 73 89 C76.5 89 79 91 80 93.5 C81 91 83.5 89 87 89 C92 89 97 93 97 99 C97 110 80 121 80 121 Z" fill="var(--accent)" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- Step 1: The Question -->
+    <section class="step active" id="stepAsk">
+      <h1 id="askHeading"></h1>
+      <p class="subtext" id="askSubtext"></p>
+      <div class="no-reaction" id="noReaction" aria-live="polite"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="yesBtn" type="button"></button>
+        <button class="btn btn-secondary" id="noBtn" type="button"></button>
+      </div>
+    </section>
+
+    <!-- Step 2: Pick a Place -->
+    <section class="step" id="stepPlace">
+      <h1 id="placeHeading"></h1>
+      <div class="options-list" id="placesList"></div>
+      <div class="custom-choice">
+        <label for="customPlaceInput">Or tell me somewhere you want to go or something you want to do</label>
+        <div class="custom-choice-row">
+          <input id="customPlaceInput" type="text" maxlength="80" placeholder="Movie, picnic, bowling..." />
+          <button class="btn btn-primary" id="customPlaceBtn" type="button">Choose ✨</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 3: Pick a Time -->
+    <section class="step" id="stepTime">
+      <h1 id="timeHeading"></h1>
+      <div class="options-list" id="timesList"></div>
+      <div class="custom-choice">
+        <label for="customTimeInput">Choose another time on 29 Oct</label>
+        <div class="custom-choice-row">
+          <input id="customTimeInput" type="time" />
+          <button class="btn btn-primary" id="customTimeBtn" type="button">Choose ✨</button>
+        </div>
+      </div>
+      <div class="step-actions">
+        <button class="btn btn-secondary" id="backToPlaceBtn" type="button">← Back</button>
+        <button class="btn btn-primary" id="confirmTimeBtn" type="button" style="display: none;">Lock it in 💕</button>
+      </div>
+    </section>
+
+    <!-- Step 4: Final Screen -->
+    <section class="step" id="stepFinal">
+      <h1 id="finalHeading"></h1>
+      <div class="summary-box" id="finalMessageBox"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="copyBtn" type="button">Copy message 📋</button>
+        <button class="btn btn-secondary" id="restartBtn" type="button">Pick again ↺</button>
+      </div>
+      <div class="copy-feedback" id="copyFeedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    // =========================================================
+    // EDITABLE CONTENT & TEXT
+    // =========================================================
+    const CONTENT = {
+      // 1. First question
+      askHeading: "Let's hang out on 29 Oct — are you free? 🐾",
+      askSubtext: "Think carefully before you answer—this bear is emotionally invested.",
+      bearFirstBubble: "Talking on Uday's behalf 🐾",
+
+      // 2. Yes and No buttons
+      yesButtonText: "Yes 💕",
+      noButtonText: "No",
+      noMessages: [
+        "Wait… are you sure? Even a tiny bit?",
+        "Okay, what if I promise really good snacks?",
+        "Look at the bear's little face. Still no?",
+        "I even rehearsed my best jokes for this!",
+        "My backup plan was literally just crying in a hoodie.",
+        "Okay, fine… press that button one more time if you dare 🥹"
+      ],
+      noFinalButtonText: "Okay, yes 🥹",
+
+      // 3. Places to visit (4 to 6 places)
+      places: [
+        { emoji: "☕", name: "Cozy Café", line: "Warm drinks, pastries, and effortless conversation" },
+        { emoji: "🌅", name: "Sunset Walk", line: "Golden hour stroll with zero rush and good vibes" },
+        
+      ],
+
+      // 4. Time options
+      times: [
+        "29 Oct — 10:00 AM",
+        "29 Oct — 12:00 PM",
+        "29 Oct — 3:00 PM",
+        "29 Oct — 6:00 PM",
+        "29 Oct — 8:00 PM"
+      ],
+
+      // 5. Other text
+      placeHeading: "Yay! Where should we go or what should we do?",
+      timeHeading: "What time would be perfect to go out on 29 Oct?",
+      finalHeading: "It's a date! 🎉",
+      finalMessageTemplate: "Yes! 💖 Let's go to {place}, {time}. See you soon!",
+      bearAfterPlace: "Ooh, amazing pick! Now when works best for you? 🗓️",
+      bearAfterTime: "That time is perfect—hit lock it in! ✨",
+      bearFinal: "Best news all week! Copy and send me the plan 🐻💌"
+    };
+
+    // =========================================================
+    // APP STATE & DOM REFERENCES
+    // =========================================================
+    let noCount = 0;
+    let selectedPlace = null;
+    let selectedTime = null;
+
+    const speechBubble = document.getElementById("speechBubble");
+    const bearSvg = document.getElementById("bearSvg");
+    const bearMouth = document.getElementById("bearMouth");
+
+    const stepAsk = document.getElementById("stepAsk");
+    const stepPlace = document.getElementById("stepPlace");
+    const stepTime = document.getElementById("stepTime");
+    const stepFinal = document.getElementById("stepFinal");
+
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const noReaction = document.getElementById("noReaction");
+    const placesList = document.getElementById("placesList");
+    const customPlaceInput = document.getElementById("customPlaceInput");
+    const customPlaceBtn = document.getElementById("customPlaceBtn");
+    const timesList = document.getElementById("timesList");
+    const customTimeInput = document.getElementById("customTimeInput");
+    const customTimeBtn = document.getElementById("customTimeBtn");
+    const backToPlaceBtn = document.getElementById("backToPlaceBtn");
+    const confirmTimeBtn = document.getElementById("confirmTimeBtn");
+    const finalMessageBox = document.getElementById("finalMessageBox");
+    const copyBtn = document.getElementById("copyBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const copyFeedback = document.getElementById("copyFeedback");
+    const themeToggle = document.getElementById("themeToggle");
+
+    // =========================================================
+    // HELPERS
+    // =========================================================
+    function setBubble(text) {
+      speechBubble.textContent = text;
+      speechBubble.style.animation = "none";
+      void speechBubble.offsetWidth; // trigger reflow for pop animation
+      speechBubble.style.animation = "";
+    }
+
+    function setBearMood(mood) {
+      bearSvg.classList.remove("sad", "excited");
+      if (mood === "sad") {
+        bearSvg.classList.add("sad");
+        bearMouth.setAttribute("d", "M74 86 Q80 81 86 86");
+      } else if (mood === "excited") {
+        bearSvg.classList.add("excited");
+        bearMouth.setAttribute("d", "M73 82 Q80 90 87 82");
+      } else {
+        bearMouth.setAttribute("d", "M74 83 Q80 88 86 83");
+      }
+    }
+
+    function showStep(target) {
+      [stepAsk, stepPlace, stepTime, stepFinal].forEach((step) => {
+        step.classList.toggle("active", step === target);
+      });
+    }
+
+    function spawnFloatingBackground() {
+      const container = document.getElementById("floatingBg");
+      const symbols = ["💕", "✨", "🩷", "🐾"];
+      for (let i = 0; i < 12; i++) {
+        const el = document.createElement("span");
+        el.className = "bg-heart";
+        el.textContent = symbols[i % symbols.length];
+        el.style.left = `${(i * 8.5 + 3) % 96}%`;
+        el.style.animationDuration = `${11 + (i % 5) * 2.5}s`;
+        el.style.animationDelay = `${-(i * 1.8)}s`;
+        container.appendChild(el);
+      }
+    }
+
+    function burstConfetti() {
+      const items = ["🎉", "💖", "✨", "🐻", "💕"];
+      for (let i = 0; i < 24; i++) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.textContent = items[i % items.length];
+        piece.style.left = `${Math.random() * 96 + 2}%`;
+        piece.style.animationDuration = `${2.1 + Math.random() * 1.4}s`;
+        piece.style.animationDelay = `${Math.random() * 0.35}s`;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 3800);
+      }
+    }
+
+    // =========================================================
+    // RENDER & EVENTS
+    // =========================================================
+    function initContent() {
+      document.getElementById("askHeading").textContent = CONTENT.askHeading;
+      document.getElementById("askSubtext").textContent = CONTENT.askSubtext;
+      document.getElementById("placeHeading").textContent = CONTENT.placeHeading;
+      document.getElementById("timeHeading").textContent = CONTENT.timeHeading;
+      document.getElementById("finalHeading").textContent = CONTENT.finalHeading;
+
+      yesBtn.textContent = CONTENT.yesButtonText;
+      noBtn.textContent = CONTENT.noButtonText;
+      setBubble(CONTENT.bearFirstBubble);
+      setBearMood("normal");
+
+      renderPlaces();
+      renderTimes();
+    }
+
+    function renderPlaces() {
+      placesList.innerHTML = "";
+      CONTENT.places.forEach((place) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-card";
+
+        const emojiEl = document.createElement("span");
+        emojiEl.className = "option-emoji";
+        emojiEl.textContent = place.emoji;
+
+        const textWrap = document.createElement("span");
+        textWrap.className = "option-text";
+
+        const titleEl = document.createElement("span");
+        titleEl.className = "option-title";
+        titleEl.textContent = place.name;
+
+        const descEl = document.createElement("span");
+        descEl.className = "option-desc";
+        descEl.textContent = place.line;
+
+        textWrap.append(titleEl, descEl);
+        btn.append(emojiEl, textWrap);
+
+        btn.addEventListener("click", () => {
+          selectedPlace = place;
+          Array.from(placesList.children).forEach((el) => el.classList.remove("selected"));
+          btn.classList.add("selected");
+          setBubble(CONTENT.bearAfterPlace);
+          setBearMood("excited");
+          showStep(stepTime);
+        });
+        placesList.appendChild(btn);
+      });
+    }
+
+    function renderTimes() {
+      timesList.innerHTML = "";
+      CONTENT.times.forEach((timeLabel) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-card";
+
+        const emojiEl = document.createElement("span");
+        emojiEl.className = "option-emoji";
+        emojiEl.textContent = "🕒";
+
+        const textWrap = document.createElement("span");
+        textWrap.className = "option-text";
+
+        const titleEl = document.createElement("span");
+        titleEl.className = "option-title";
+        titleEl.textContent = timeLabel;
+
+        textWrap.appendChild(titleEl);
+        btn.append(emojiEl, textWrap);
+
+        btn.addEventListener("click", () => {
+          selectedTime = timeLabel;
+          Array.from(timesList.children).forEach((el) => el.classList.remove("selected"));
+          btn.classList.add("selected");
+          setBubble(CONTENT.bearAfterTime);
+          confirmTimeBtn.style.display = "inline-flex";
+        });
+        timesList.appendChild(btn);
+      });
+    }
+
+    function goToPlaces() {
+      setBearMood("excited");
+      setBubble("Best decision ever! 🥰");
+      showStep(stepPlace);
+    }
+
+    yesBtn.addEventListener("click", goToPlaces);
+
+    customPlaceBtn.addEventListener("click", () => {
+      const customChoice = customPlaceInput.value.trim();
+      if (!customChoice) {
+        customPlaceInput.focus();
+        setBubble("Tell me one place or activity first! 🐾");
+        return;
+      }
+
+      selectedPlace = { emoji: "✨", name: customChoice };
+      Array.from(placesList.children).forEach((el) => el.classList.remove("selected"));
+      setBubble(CONTENT.bearAfterPlace);
+      setBearMood("excited");
+      showStep(stepTime);
+    });
+
+    customPlaceInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        customPlaceBtn.click();
+      }
+    });
+
+    customTimeBtn.addEventListener("click", () => {
+      if (!customTimeInput.value) {
+        customTimeInput.focus();
+        setBubble("Pick the perfect time for 29 Oct! 🕒");
+        return;
+      }
+
+      const [hours, minutes] = customTimeInput.value.split(":").map(Number);
+      const period = hours >= 12 ? "PM" : "AM";
+      const displayHours = hours % 12 || 12;
+      selectedTime = `29 Oct — ${displayHours}:${String(minutes).padStart(2, "0")} ${period}`;
+      Array.from(timesList.children).forEach((el) => el.classList.remove("selected"));
+      setBubble(CONTENT.bearAfterTime);
+      confirmTimeBtn.style.display = "inline-flex";
+    });
+
+    customTimeInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        customTimeBtn.click();
+      }
+    });
+
+    noBtn.addEventListener("click", () => {
+      if (noCount >= CONTENT.noMessages.length) {
+        goToPlaces();
+        return;
+      }
+
+      noReaction.textContent = CONTENT.noMessages[noCount];
+      noCount += 1;
+      setBearMood("sad");
+
+      noBtn.classList.remove("shake");
+      void noBtn.offsetWidth;
+      noBtn.classList.add("shake");
+
+      const yesScale = Math.min(1 + noCount * 0.05, 1.25);
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      if (noCount === CONTENT.noMessages.length) {
+        noBtn.textContent = CONTENT.noFinalButtonText;
+        noBtn.classList.add("converted");
+        setBubble("Okay, no more dodging—say yes! 🥹");
+      } else {
+        setBubble("Pleaseee? 🥺");
+      }
+    });
+
+    backToPlaceBtn.addEventListener("click", () => {
+      setBubble("Take your time picking a spot 🐾");
+      showStep(stepPlace);
+    });
+
+    confirmTimeBtn.addEventListener("click", () => {
+      if (!selectedPlace || !selectedTime) return;
+      const msg = CONTENT.finalMessageTemplate
+        .replace("{place}", `${selectedPlace.emoji} ${selectedPlace.name}`)
+        .replace("{time}", selectedTime);
+      finalMessageBox.textContent = msg;
+      copyFeedback.textContent = "";
+      setBearMood("excited");
+      setBubble(CONTENT.bearFinal);
+      showStep(stepFinal);
+      burstConfetti();
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      const text = finalMessageBox.textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        copyFeedback.textContent = "Copied! Now paste and send it 💕";
+      } catch {
+        const temp = document.createElement("textarea");
+        temp.value = text;
+        temp.style.position = "fixed";
+        temp.style.opacity = "0";
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        temp.remove();
+        copyFeedback.textContent = "Copied! Now paste and send it 💕";
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      selectedPlace = null;
+      selectedTime = null;
+      customPlaceInput.value = "";
+      customTimeInput.value = "";
+      confirmTimeBtn.style.display = "none";
+      Array.from(placesList.children).forEach((el) => el.classList.remove("selected"));
+      Array.from(timesList.children).forEach((el) => el.classList.remove("selected"));
+      setBearMood("excited");
+      setBubble("Round two! Where should we go? ✨");
+      showStep(stepPlace);
+    });
+
+    // Dark / Light mode toggle respecting OS default initially
+    function syncThemeIcon() {
+      const explicit = document.documentElement.getAttribute("data-theme");
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = explicit ? explicit === "dark" : systemDark;
+      themeToggle.textContent = isDark ? "☀️" : "🌙";
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const explicit = document.documentElement.getAttribute("data-theme");
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const currentlyDark = explicit ? explicit === "dark" : systemDark;
+      document.documentElement.setAttribute("data-theme", currentlyDark ? "light" : "dark");
+      syncThemeIcon();
+    });
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", syncThemeIcon);
+
+    // Boot
+    spawnFloatingBackground();
+    syncThemeIcon();
+    initContent();
+  </script>
+</body>
+</html>
